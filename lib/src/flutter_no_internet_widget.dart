@@ -74,42 +74,39 @@ class InternetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ResponsiveSizer(
-        builder: (context, orientation, screenType) {
-          return BlocProvider<InternetCubit>(
-            create: (context) => InternetCubit(
-              connectivity: connectivity,
-              urlLookup: lookupUrl,
-            ),
-            child: Scaffold(
-              body: Builder(
-                builder: (_) {
-                  return BlocBuilder<InternetCubit, InternetState>(
-                    builder: (_, state) {
-                      if (state.cubitStatus == CubitStatus.busy) {
-                        if (loadingWidget != null) {
-                          return loadingWidget!;
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+    return ResponsiveSizer(
+      builder: (context, orientation, screenType) {
+        return BlocProvider<InternetCubit>(
+          create: (context) => InternetCubit(
+            connectivity: connectivity,
+            urlLookup: lookupUrl,
+          ),
+          child: Scaffold(
+            body: Builder(
+              builder: (_) {
+                return BlocBuilder<InternetCubit, InternetState>(
+                  builder: (_, state) {
+                    if (state.cubitStatus == CubitStatus.busy) {
+                      if (loadingWidget != null) {
+                        return loadingWidget!;
                       }
-                      return Stack(
-                        children: [
-                          _getOnlineWidget(context),
-                          _getOfflineWidget(context, state.internetStatus),
-                        ],
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
-                    },
-                  );
-                },
-              ),
+                    }
+                    return Stack(
+                      children: [
+                        _getOnlineWidget(context),
+                        _getOfflineWidget(context, state.internetStatus),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
